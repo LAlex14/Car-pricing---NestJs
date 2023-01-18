@@ -7,3 +7,21 @@ content-type: application/json
   "email": "test1@test.com",
   "password": "test"
 }
+
+### Get a user by id
+GET http://localhost:3000/auth/1
+
+### Get the users by email
+GET http://localhost:3000/auth?email=test1@test.com
+
+### Delete a user by id
+DELETE http://localhost:3000/auth/2
+
+### Update a user by id
+PATCH http://localhost:3000/auth/1
+content-type: application/json
+
+{
+  "email": "alex@test.com",
+  "password": "test"
+}
