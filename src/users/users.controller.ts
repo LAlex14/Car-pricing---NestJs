@@ -8,29 +8,54 @@ import {
     Patch,
     Post,
     Query,
+    Session,
 } from '@nestjs/common';
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 import { Serialize } from "../interceptors/serialize.interceptor";
 import { UserDto } from "./dtos/user.dto";
+import { AuthService } from "./auth.service";
 
 @Serialize(UserDto)
 @Controller('auth')
 export class UsersController {
-    constructor(private usersService: UsersService) {
+    constructor(
+        private usersService: UsersService,
+        private authService: AuthService
+    ) {
     }
 
     @Post('/signup')
-    async createUser(@Body() body: CreateUserDto) {
-        await this.usersService.create(body)
+    async createUser(@Body() body: CreateUserDto, @Session() session: any) {
+        const user = await this.authService.signUp(body)
+        session.userId = user.id
+        return user;
+    }
+
+    @Post('/signin')
+    async signIn(@Body() body: CreateUserDto, @Session() session: any) {
+        const user = await this.authService.signIn(body)
+        console.log(session)
+        session.userId = user.id
+        return user;
+    }
+
+    @Get('/whoami')
+    async whoAmI(@Session() session: any) {
+        return await this.usersService.findOne(session.userId)
+    }
+
+    @Post('/signout')
+    async signOut(@Session() session: any) {
+        session.userId = null
     }
 
     @Get('/:id')
     async findUser(@Param('id') id: string) {
         console.log('handler is running')
         const user = await this.usersService.findOne(+id)
-        if(!user) {
+        if (!user) {
             throw new NotFoundException('user not found')
         }
         return user
