@@ -16,7 +16,7 @@ content-type: application/json
   "password": "test"
 }
 
-### Get currently signed in user
+### Get currently signed in user (WhoAmI)
 GET http://localhost:3000/auth/whoami
 
 ### SignOut
@@ -26,7 +26,7 @@ POST http://localhost:3000/auth/signout
 GET http://localhost:3000/auth/1
 
 ### Get the users by email
-GET http://localhost:3000/auth?id=2
+GET http://localhost:3000/auth?email=test1@test.com
 
 ### Delete a user by id
 DELETE http://localhost:3000/auth/2
