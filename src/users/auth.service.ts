@@ -1,18 +1,7 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { UsersService } from "./users.service";
-import { promisify } from "util";
-import { scrypt as _scrypt, randomBytes } from "crypto";
 import { CreateUserDto } from "./dtos/create-user.dto";
-
-const scrypt = promisify(_scrypt);
-
-async function hashedPassword({ salt, password }): Promise<string> {
-    // hash the salt and the password together
-    const hash = (await scrypt(password, salt, 32)) as Buffer
-
-    // join the hashed result and salt together
-    return `${salt}.${hash.toString('hex')}`
-}
+import { hashedPassword } from "./utils/users.utils";
 
 @Injectable()
 export class AuthService {
@@ -25,11 +14,7 @@ export class AuthService {
            throw new BadRequestException('email in use')
         }
 
-        /// hash the user password
-        // generate a salt
-        const salt = randomBytes(8).toString('hex') // fwew43tr34f5gw4 -> 16 chars
-
-        password = await hashedPassword({ salt, password})
+        password = await hashedPassword({ password })
 
         /// create a new user and save it
         return await this.usersService.create({ email, password })
@@ -42,7 +27,7 @@ export class AuthService {
         }
 
         const [ salt ] = user.password.split('.')
-        password = await hashedPassword({ salt, password})
+        password = await hashedPassword({ salt, password })
 
         if (password !== user.password) {
             throw new BadRequestException('The email or password are wrong')

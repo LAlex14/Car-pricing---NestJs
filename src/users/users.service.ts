@@ -3,6 +3,7 @@ import { Repository } from "typeorm";
 import { User } from "./user.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserDto } from "./dtos/create-user.dto";
+import { hashedPassword } from "./utils/users.utils";
 
 @Injectable()
 export class UsersService {
@@ -29,6 +30,13 @@ export class UsersService {
         let user = await this.repo.findOneBy({ id })
         if (!user) {
             throw new NotFoundException('user not found')
+        }
+        if (attrs.password) {
+            const [salt] = user.password
+            attrs.password = await hashedPassword({
+                salt,
+                password: attrs.password
+            })
         }
         Object.assign(user, attrs)
         return this.repo.save(user)
