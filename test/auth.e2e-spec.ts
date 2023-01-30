@@ -31,4 +31,5 @@ describe('Authentication system', () => {
                 expect(email).toEqual(email)
             })
     });
+
 });
