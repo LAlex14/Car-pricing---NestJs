@@ -7,8 +7,7 @@ import { hashedPassword } from "./utils/users.utils";
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private repo: Repository<User>) {
-    }
+    constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
     create(body: CreateUserDto) {
         const user = this.repo.create(body)

@@ -1,0 +1,13 @@
+### Create report
+POST http://localhost:3000/reports
+content-type: application/json
+
+{
+  "price": 3000,
+  "make": "opel",
+  "model": "astra",
+  "year": 1970,
+  "lat": 0,
+  "lng": 0,
+  "mileage": 230000
+}
