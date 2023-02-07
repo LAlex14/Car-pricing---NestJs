@@ -14,6 +14,9 @@ export class ReportDto {
     model: string;
 
     @Expose()
+    approved: boolean;
+
+    @Expose()
     year: number;
 
     @Expose()
