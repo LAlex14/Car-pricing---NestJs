@@ -16,6 +16,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
             isGlobal: true,
             envFilePath: `.env.${process.env.NODE_ENV}`
         }),
+        // TypeOrmModule.forRoot(),
         TypeOrmModule.forRootAsync({
             inject: [ConfigService],
             useFactory: (config: ConfigService) => {
@@ -42,9 +43,13 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
     ],
 })
 export class AppModule {
+    constructor(
+        private configService: ConfigService
+    ) {}
+
     configure(consumer: MiddlewareConsumer) {
         consumer.apply(cookieSession({
-            keys: ['asdfasfd']
+            keys: [this.configService.get('COOKIE_KEY')]
         })).forRoutes('*')
     }
 }
